@@ -1,0 +1,16 @@
+Please remember to install the ingress controller for aws as this will be usefull for Kubernetes ingress.
+
+
+
+Create ingress controller
+Steps
+Create ec2 instance(kops). it will be talking to the aws services. Thus would need admin access..istall aws-cli..run aws configure->to set up its shell and gain access to aws via the private key created from aws.
+-create the ssh key
+-install kops to the instance - see install kops link for the os from google search - run "kops" to see output and ensure it is installed.
+-install kubectl on the operating system - run "kubectl version --client"  to see output and ensure it is installed.
+-create aws storage bucket, dns zone in aws route53, then use link found in the ddc material to create the cluster via kops
+
+
+
+Launch the kubernetes cluster
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.3/deploy/static/provider/aws/deploy.yaml

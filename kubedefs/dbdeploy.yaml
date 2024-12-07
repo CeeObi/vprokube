@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: vprodb
+    labels:
+        app: vprodb #label so when we create the service for db, we will tell it to find the pod with this label and link with it..
+spec:
+    selector:
+        matchLabels:
+            app: vprodb #so any previous running pods with this label will be part of this deployment definiition.
+    replicas: 1 #Cant have replica for database
+    # template of our pod.
+    template:
+        metadata:
+            labels:
+                app: vprodb
+        spec:
+            containers:
+                - name: vprodb
+                  image: vprocontainers/vprofiledb
+                  volumeMounts:
+                      - mountPath: /var/lib/mysql
+                        name: vpro-db-data
+                  ports:
+                      - name: vprodb-port
+                        containerPort: 3306
+                  env:
+                      - name: MYSQL_ROOT_PASSWORD
+                        valueFrom:
+                            secretKeyRef:
+                                name: app-secret # the metadata name of the secret previously created declaratively yaml
+                                key: db-pass # the data value of the secret previously created declaratively yaml
+            volumes:
+                - name: vpro-db-data
+                  persistentVolumeClaim:
+                      claimName: db-pv-claim # the metadata name of the pvcclaim previously created declaratively yaml
+
+            #create an init container below to remove the mysql lostbutfound folder which is usually there by default during mounting.
+            initContainers:
+                - name: busybox
+                  image: busybox:latest
+                  args: ["rm", "-rf", "/var/lib/mysql/lost+found"]
+                  volumeMounts:
+                      - name: vpro-db-data
+                        mountPath: /var/lib/mysql

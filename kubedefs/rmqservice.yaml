@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: vpromq01 #This should match with the configuration in application.properties
+spec:
+    ports:
+        - port: 5672
+          protocol: TCP
+          targetPort: vprormq-port #This can also be the actua; port number - 3306
+    selector:
+        app: vprormq
+    type: ClusterIP #Type is cluster Ip because it is for internal communication only.

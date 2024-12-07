@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: vproapp-service # this name should tally with that of the mysql uri as defined in the application.properties file in java - i.e - jdbc:mysql://"vprodb:3306". tHE SERVICENAME WITH PORT NUMBER
+spec:
+    ports:
+        - port: 8080
+          protocol: TCP
+          targetPort: vpromc-8080 #This can also be the name
+    selector:
+        app: vproapp
+    type: ClusterIP
